@@ -42,7 +42,7 @@ class curl {
     private $proxy_auth = '';
     private $proxy_type = '';
     /** @var bool */
-    private $debug    = true;
+    private $debug    = false; 
     private $cookie   = false;
     private $count    = 0;
 
