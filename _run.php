@@ -4,18 +4,23 @@ date_default_timezone_set ('Europe/Riga');
 $conf = parse_ini_file (dirname(__FILE__) . '/.conf');
 extract($conf);
 
-/// XML-RPC CALL
-header('Content-Type: text/plain');
-$serverurl = $domainname . '/webservice/xmlrpc/server.php'. '?wstoken=' . $token;
-require_once('./curl.php');
+$serverurl = $domainname . '/webservice/rest/server.php'. '?wstoken=' . $token. '&wsfunction='. basename($_SERVER["SCRIPT_FILENAME"], '.php') . '&moodlewsrestformat=json';
 
-echo  PHP_EOL . '================================= REQUEST =======================================' . PHP_EOL;
+echo '<html><head></head><body>';
+echo  PHP_EOL . '<h1>================================= REQUEST =======================================</h1>' . PHP_EOL;
 echo 'URL: ' . $serverurl . PHP_EOL;
+echo '<pre>';
 print_r($params);
+echo '</pre>';
 
+//execute
+require_once('./curl.php');
 $curl = new curl;
-$post = xmlrpc_encode_request($functionname, array($params));
 
-$resp = xmlrpc_decode($curl->post($serverurl, $post));
-echo  PHP_EOL . '================================= RESPONSE ======================================' . PHP_EOL;
-print_r($resp);
+$resp = $curl->post($serverurl, $params);
+
+echo '<pre>' ;
+echo  PHP_EOL . '<h1>================================= RESPONSE ======================================</h1>' . PHP_EOL;
+print_r(json_decode($resp));
+
+echo '</pre></body></html>';
